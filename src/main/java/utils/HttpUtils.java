@@ -1,3 +1,5 @@
+package utils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +17,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 
-class HttpUtils {
+public class HttpUtils {
 
     private final String USER_AGENT = "Mozilla/5.0";
 
@@ -25,7 +27,7 @@ class HttpUtils {
 
 //        System.out.println("GET Request Using HttpURLConnection");
 //        http.sendGet("http://172.19.2.136:8000/find_element/find_element/");
-        List<Cookie> token = http.getToken("http://172.19.2.136:8000/find_element/find_element/");
+        Cookie token = http.getToken("http://172.19.2.136:8000/find_element/find_element/");
         System.out.println();
 
 
@@ -35,7 +37,7 @@ class HttpUtils {
 
     }
 
-    private List<Cookie> getToken(String url) throws Exception {
+    public static Cookie getToken(String url) throws Exception {
         /* init client */
         HttpClient http = null;
         CookieStore httpCookieStore = new BasicCookieStore();
@@ -53,16 +55,14 @@ class HttpUtils {
         List<Cookie> cookies = httpCookieStore.getCookies();
         for (int i = 0; i < cookies.size(); i++) {
 //            System.out.println("Cookie: " + cookies.get(i));
-            Cookie cookie = cookies.get(i);
-            System.out.println(
-                    "Cookie: " + cookie.getName() +
-                            ", Value: " + cookie.getValue() +
-                            ", IsPersistent?: " + cookie.isPersistent() +
-                            ", Expiry Date: " + cookie.getExpiryDate() +
-                            ", Comment: " + cookie.getComment());
-        }
-        return cookies;
 
+            Cookie cookie = cookies.get(i);
+            if (cookie.getName().equals("csrftoken")) {
+                return cookie;
+            }
+        }
+
+        return null;
     }
 
     private void sendGet(String url) throws Exception {
@@ -90,7 +90,7 @@ class HttpUtils {
     private void sendPost(String url) throws Exception {
 //    private void sendPost(String url, List<Cookie> token) throws Exception {
 
-        HttpClient client = new DefaultHttpClient();
+        HttpClient client = HttpClientBuilder.create().build();
         HttpPost post = new HttpPost(url);
 //        CookieStore cookieStore = new BasicCookieStore();
 
