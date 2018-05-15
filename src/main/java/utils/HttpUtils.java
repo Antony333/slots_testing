@@ -29,12 +29,8 @@ public class HttpUtils {
 //        http.sendGet("http://172.19.2.136:8000/find_element/find_element/");
         Cookie token = http.getToken("http://172.19.2.136:8000/find_element/find_element/");
         System.out.println();
-
-
         System.out.println("POST Request Using HttpURLConnection");
         http.sendPost("http://172.19.2.136:8000/find_element/find_element/");
-//        http.sendPost("http://172.19.2.136:8000/find_element/find_element/", token);
-
     }
 
     public static Cookie getToken(String url) throws Exception {
@@ -49,9 +45,6 @@ public class HttpUtils {
         HttpResponse httpResponse = null;
         try {httpResponse = http.execute(httpRequest);} catch (Throwable error) {throw new RuntimeException(error);}
 
-        /* check cookies */
-
-        System.out.println(httpCookieStore.getCookies());
         List<Cookie> cookies = httpCookieStore.getCookies();
         for (int i = 0; i < cookies.size(); i++) {
 //            System.out.println("Cookie: " + cookies.get(i));
