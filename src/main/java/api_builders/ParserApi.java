@@ -37,7 +37,7 @@ public class ParserApi {
         HttpClient client = HttpClientBuilder.create().setDefaultCookieStore(cookieStore).build();
 
         FileBody data = new FileBody(file);
-        MultipartEntityBuilder reqEntity = MultipartEntityBuilder.create();
+        MultipartEntityBuilder reqEntity = MultipartEntityBuilder.create().setLaxMode();
         reqEntity.addPart("csrfmiddlewaretoken", new StringBody(token.getValue(), ContentType.TEXT_PLAIN));
         reqEntity.addPart("element_text", new StringBody(elementName, ContentType.TEXT_PLAIN));
         reqEntity.addPart("text_threshold", new StringBody("250", ContentType.TEXT_PLAIN));
@@ -50,7 +50,8 @@ public class ParserApi {
         postParameters.add(new BasicNameValuePair("docfile", "gfgfgf"));
         post.setHeader("User-Agent", USER_AGENT);
         UrlEncodedFormEntity entity = new UrlEncodedFormEntity(postParameters);
-        post.setEntity(reqEntity.build());
+        HttpEntity httpEntity = reqEntity.build();
+        post.setEntity(httpEntity);
 
         HttpResponse response = client.execute(post);
         System.out.println(response);
@@ -68,6 +69,6 @@ public class ParserApi {
 
     public static void main(String[] args) throws Exception {
         ParserApi parserApi = new ParserApi();
-        parserApi.findElement(new File("Screenshot_2018-04-27-16-23-48-709_com.productmadness.hovmobile.png"), "siper element");
+        parserApi.findElement(new File("D:\\Product madness\\product-madness-tests\\src\\main\\java\\api_builders\\Screenshot_2018-04-27-16-23-48-709_com.productmadness.hovmobile.png"), "siper element");
     }
 }
