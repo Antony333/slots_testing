@@ -43,13 +43,6 @@ public class ParserApi {
         reqEntity.addPart("text_threshold", new StringBody("250", ContentType.TEXT_PLAIN));
         reqEntity.addPart("docfile", data);
 
-        ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
-        postParameters.add(new BasicNameValuePair("csrfmiddlewaretoken", token.getValue()));
-        postParameters.add(new BasicNameValuePair("element_text", elementName));
-        postParameters.add(new BasicNameValuePair("text_threshold", "250"));
-        postParameters.add(new BasicNameValuePair("docfile", "gfgfgf"));
-        post.setHeader("User-Agent", USER_AGENT);
-        UrlEncodedFormEntity entity = new UrlEncodedFormEntity(postParameters);
         HttpEntity httpEntity = reqEntity.build();
         post.setEntity(httpEntity);
 
@@ -67,8 +60,41 @@ public class ParserApi {
         System.out.println("Response Code : " + response.getStatusLine().getStatusCode());
     }
 
+    public void initThresholds(File file, String elements) throws Exception {
+        HttpPost post = new HttpPost("http://172.19.2.136:8000/recognition/init_thresholds/");
+
+        Cookie token = utils.HttpUtils.getToken("http://172.19.2.136:8000/recognition/init_thresholds/");
+
+        BasicCookieStore cookieStore = new BasicCookieStore();
+        cookieStore.addCookie(token);
+        HttpClient client = HttpClientBuilder.create().setDefaultCookieStore(cookieStore).build();
+
+        FileBody data = new FileBody(file);
+        MultipartEntityBuilder reqEntity = MultipartEntityBuilder.create().setLaxMode();
+        reqEntity.addPart("csrfmiddlewaretoken", new StringBody(token.getValue(), ContentType.TEXT_PLAIN));
+        reqEntity.addPart("elements", new StringBody(elements, ContentType.TEXT_PLAIN));
+        reqEntity.addPart("docfile", data);
+
+        HttpEntity httpEntity = reqEntity.build();
+        post.setEntity(httpEntity);
+
+        HttpResponse response = client.execute(post);
+        System.out.println(response);
+        BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+
+        StringBuffer result = new StringBuffer();
+        String line = "";
+        while ((line = rd.readLine()) != null) {
+            result.append(line);
+        }
+
+        System.out.println(result);
+        System.out.println("Response Code : " + response.getStatusLine().getStatusCode());
+    }
+
     public static void main(String[] args) throws Exception {
         ParserApi parserApi = new ParserApi();
-        parserApi.findElement(new File("D:\\Product madness\\product-madness-tests\\src\\main\\java\\api_builders\\Screenshot_2018-04-27-16-23-48-709_com.productmadness.hovmobile.png"), "siper element");
+        parserApi.initThresholds(new File("D:\\Product madness\\product-madness-tests\\src\\main\\java\\api_builders\\IMG_0332 iPad mini 4.PNG"),
+                "BUY, SPIN, MAX");
     }
 }
