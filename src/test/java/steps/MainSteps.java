@@ -1,12 +1,13 @@
-package madness.steps;
+package steps;
 
-import cucumber.api.PendingException;
-import cucumber.api.Scenario;
+import api_builders.ParserApi;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
@@ -22,8 +23,8 @@ import java.util.Date;
 
 public class MainSteps {
 
-    public File screenShot;
-    public static AndroidDriver driver;
+    public AndroidDriver driver;
+    public ParserApi parserApi;
 
     @Before
     public void setUp() throws Exception {
@@ -37,21 +38,48 @@ public class MainSteps {
         capabilities.setCapability("newCommandTimeout", 200);
         URL serverAddress = new URL("http://127.0.0.1:4723/wd/hub");
         driver = new AndroidDriver(serverAddress, capabilities);
+        parserApi = new ParserApi();
     }
 
     @Given("^I am in slot screen$")
     public void init_all_elements() throws Exception {
-        Thread.sleep(140000);
-        takeScreenShot();
+        Thread.sleep(150000);
+        File screenShot = takeScreenShot();
+        parserApi.initThresholds(screenShot, "SPIN, MAX, +");
+        Assert.assertTrue(true);
 
     }
 
     @When("^I spin slot$")
-    public void find_element() throws Exception {
+    public void find_element_and_click() throws Exception {
+        File screenShot = takeScreenShot();
+        parserApi.findElement(screenShot, "SPIN", "253");
+        TouchAction action = new TouchAction(driver);
+        action.tap(1683, 984).release();
+        action.perform();
     }
 
-    @Then("^I should see UI not interactable$")
-    public void find_elements() throws Exception {
+    @Then("^I should see not interactable elements while spinning$")
+    public void find_disappeared_elements() throws Exception {
+        Thread.sleep(2000);
+        File screenShot = takeScreenShot();
+        parserApi.findElement(screenShot, "SPIN", "253");
+        Assert.assertFalse(false);
+        parserApi.findElement(screenShot, "MAX", "250");
+        Assert.assertFalse(false);
+        parserApi.findElement(screenShot, "+", "250");
+        Assert.assertFalse(false);
+    }
+
+    @And("^I should see interactable elements when spin has come to a stop$")
+    public void find_appeared_elements() throws Exception {
+        Thread.sleep(2000);
+        File screenShot = takeScreenShot();
+        parserApi.findElement(screenShot, "SPIN", "253");
+        Assert.assertTrue(true);
+        parserApi.findElement(screenShot, "MAX", "250");
+        Assert.assertTrue(true);
+        parserApi.findElement(screenShot, "+", "250");
         Assert.assertTrue(true);
     }
 
@@ -60,10 +88,10 @@ public class MainSteps {
         driver.quit();
     }
 
-    public void takeScreenShot() {
+    public File takeScreenShot() throws IOException {
 
         // Set folder name to store screenshots.
-        String destDir = "screenshots";
+        String destDir = "src/test/resources/screenshots";
         String screenNamePattern = "dd-MMM-yyyy__hh_mm_ssaa";
         String screenFileExtension = ".png";
 
@@ -78,12 +106,8 @@ public class MainSteps {
 
         // Set file name using current date time.
         String destFile = dateFormat.format(new Date()) + screenFileExtension;
-        try {
             // Copy paste file at destination folder location
-            FileUtils.copyFile(scrFile, new File(destDir + "/" + destFile));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        FileUtils.copyFile(scrFile, new File(destDir + "/" + destFile));
+        return scrFile;
     }
-
 }

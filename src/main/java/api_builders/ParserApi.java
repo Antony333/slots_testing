@@ -28,7 +28,7 @@ import java.util.List;
 import static org.apache.http.HttpHeaders.USER_AGENT;
 
 public class ParserApi {
-    public void findElement(File file, String elementName) throws Exception {
+    public void findElement(File file, String elementName, String threshold) throws Exception {
         HttpPost post = new HttpPost("http://172.19.2.136:8000/recognition/find_element/");
         Cookie token = utils.HttpUtils.getToken("http://172.19.2.136:8000/recognition/find_element/");
 
@@ -40,7 +40,7 @@ public class ParserApi {
         MultipartEntityBuilder reqEntity = MultipartEntityBuilder.create().setLaxMode();
         reqEntity.addPart("csrfmiddlewaretoken", new StringBody(token.getValue(), ContentType.TEXT_PLAIN));
         reqEntity.addPart("element_text", new StringBody(elementName, ContentType.TEXT_PLAIN));
-        reqEntity.addPart("text_threshold", new StringBody("250", ContentType.TEXT_PLAIN));
+        reqEntity.addPart("text_threshold", new StringBody(threshold, ContentType.TEXT_PLAIN));
         reqEntity.addPart("docfile", data);
 
         HttpEntity httpEntity = reqEntity.build();
@@ -90,11 +90,5 @@ public class ParserApi {
 
         System.out.println(result);
         System.out.println("Response Code : " + response.getStatusLine().getStatusCode());
-    }
-
-    public static void main(String[] args) throws Exception {
-        ParserApi parserApi = new ParserApi();
-        parserApi.initThresholds(new File("D:\\Product madness\\product-madness-tests\\src\\main\\java\\api_builders\\IMG_0332 iPad mini 4.PNG"),
-                "BUY, SPIN, MAX");
     }
 }
