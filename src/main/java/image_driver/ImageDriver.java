@@ -20,7 +20,12 @@ public class ImageDriver {
 
         String json = EntityUtils.toString(findElementHttpEntity, StandardCharsets.UTF_8);
 
-        return new JSONObject(json);
+        System.out.println(json);
+        if (!json.equals("null")) {
+            return new JSONObject(json);
+        }
+
+        return null;
 
     }
 

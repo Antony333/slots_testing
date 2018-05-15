@@ -1,15 +1,16 @@
 package steps;
 
-import api_builders.ParserApi;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import image_driver.ImageDriver;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import org.apache.commons.io.FileUtils;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.remote.CapabilityType;
@@ -23,8 +24,11 @@ import java.util.Date;
 
 public class MainSteps {
 
+    public final String ELEMENTS_TO_SEARCH = "SPIN, MAX, +";
     public AndroidDriver driver;
-    public ParserApi parserApi;
+    public ImageDriver imageDriver;
+    public JSONObject elements;
+
 
     @Before
     public void setUp() throws Exception {
@@ -38,14 +42,16 @@ public class MainSteps {
         capabilities.setCapability("newCommandTimeout", 200);
         URL serverAddress = new URL("http://127.0.0.1:4723/wd/hub");
         driver = new AndroidDriver(serverAddress, capabilities);
-        parserApi = new ParserApi();
+        imageDriver = new ImageDriver();
     }
 
     @Given("^I am in slot screen$")
     public void init_all_elements() throws Exception {
+        //Waiting until we get slot screen
         Thread.sleep(150000);
         File screenShot = takeScreenShot();
-        parserApi.initThresholds(screenShot, "SPIN, MAX, +");
+        elements = imageDriver.initThresholds(screenShot, ELEMENTS_TO_SEARCH);
+        System.out.println(elements);
         Assert.assertTrue(true);
 
     }
@@ -53,9 +59,15 @@ public class MainSteps {
     @When("^I spin slot$")
     public void find_element_and_click() throws Exception {
         File screenShot = takeScreenShot();
-        parserApi.findElement(screenShot, "SPIN", "253");
+        String spinThreshold = String.valueOf(elements.getInt("SPIN"));
+        JSONObject spinElement = imageDriver.findElement(screenShot, "SPIN", spinThreshold);
+
+        System.out.println(spinElement);
+        JSONObject coordinates = spinElement.getJSONObject("coordinates");
+
+        Assert.assertNotNull(spinElement);
         TouchAction action = new TouchAction(driver);
-        action.tap(1683, 984).release();
+        action.tap(coordinates.getInt("x_center"), coordinates.getInt("y_center")).release();
         action.perform();
     }
 
@@ -63,24 +75,40 @@ public class MainSteps {
     public void find_disappeared_elements() throws Exception {
         Thread.sleep(2000);
         File screenShot = takeScreenShot();
-        parserApi.findElement(screenShot, "SPIN", "253");
-        Assert.assertFalse(false);
-        parserApi.findElement(screenShot, "MAX", "250");
-        Assert.assertFalse(false);
-        parserApi.findElement(screenShot, "+", "250");
-        Assert.assertFalse(false);
+        String spinThreshold = String.valueOf(elements.getInt("SPIN"));
+        JSONObject spinElement = imageDriver.findElement(screenShot, "SPIN", spinThreshold);
+        System.out.println(spinElement);
+        Assert.assertNull(spinElement);
+
+        String maxBetThreshold = String.valueOf(elements.getInt("MAX"));
+        JSONObject maxBetElement = imageDriver.findElement(screenShot, "MAX", maxBetThreshold);
+        System.out.println(maxBetElement);
+        Assert.assertNull(maxBetElement);
+
+        String plusThreshold = String.valueOf(elements.getInt("+"));
+        JSONObject plusElement = imageDriver.findElement(screenShot, "+", plusThreshold);
+        System.out.println(plusElement);
+        Assert.assertNull(plusElement);
     }
 
     @And("^I should see interactable elements when spin has come to a stop$")
     public void find_appeared_elements() throws Exception {
         Thread.sleep(2000);
         File screenShot = takeScreenShot();
-        parserApi.findElement(screenShot, "SPIN", "253");
-        Assert.assertTrue(true);
-        parserApi.findElement(screenShot, "MAX", "250");
-        Assert.assertTrue(true);
-        parserApi.findElement(screenShot, "+", "250");
-        Assert.assertTrue(true);
+        String spinThreshold = String.valueOf(elements.getInt("SPIN"));
+        JSONObject spinElement = imageDriver.findElement(screenShot, "SPIN", spinThreshold);
+        System.out.println(spinElement);
+        Assert.assertNotNull(spinElement);
+
+        String maxBetThreshold = String.valueOf(elements.getInt("MAX"));
+        JSONObject maxBetElement = imageDriver.findElement(screenShot, "MAX", maxBetThreshold);
+        System.out.println(maxBetElement);
+        Assert.assertNotNull(maxBetElement);
+
+        String plusThreshold = String.valueOf(elements.getInt("+"));
+        JSONObject plusElement = imageDriver.findElement(screenShot, "+", plusThreshold);
+        Assert.assertNotNull(plusElement);
+        System.out.println(plusElement);
     }
 
     @After
