@@ -61,4 +61,26 @@ public class ParserApi {
 
         return response.getEntity();
     }
+
+    public HttpEntity findElementByTempalte(File originalImage, File templateImage) throws Exception {
+        HttpPost post = new HttpPost("http://172.19.2.136:8000/recognition/find_element/");
+        Cookie token = utils.HttpUtils.getToken("http://172.19.2.136:8000/recognition/find_template_image/");
+
+        BasicCookieStore cookieStore = new BasicCookieStore();
+        cookieStore.addCookie(token);
+        HttpClient client = HttpClientBuilder.create().setDefaultCookieStore(cookieStore).build();
+
+        FileBody originalImageData = new FileBody(originalImage);
+        FileBody templateImageData = new FileBody(templateImage);
+        MultipartEntityBuilder reqEntity = MultipartEntityBuilder.create().setLaxMode();
+        reqEntity.addPart("original_image", originalImageData);
+        reqEntity.addPart("template_image", templateImageData);
+
+        HttpEntity httpEntity = reqEntity.build();
+        post.setEntity(httpEntity);
+
+        HttpResponse response = client.execute(post);
+        return response.getEntity();
+    }
+
 }

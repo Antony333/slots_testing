@@ -37,4 +37,17 @@ public class ImageDriver {
         return new JSONObject(json);
 
     }
+
+    public JSONObject findElementByTempalte(File originalImage, File templateImage) throws Exception {
+        HttpEntity findElementHttpEntity = parserApi.findElementByTempalte(originalImage, templateImage);
+
+        String json = EntityUtils.toString(findElementHttpEntity, StandardCharsets.UTF_8);
+
+        System.out.println(json);
+        if (!json.equals("null")) {
+            return new JSONObject(json);
+        }
+
+        return null;
+    }
 }

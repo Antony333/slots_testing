@@ -48,7 +48,7 @@ public class MainSteps {
     @Given("^I am in slot screen$")
     public void init_all_elements() throws Exception {
         //Waiting until we get slot screen
-        Thread.sleep(150000);
+        Thread.sleep(100000);
         File screenShot = takeScreenShot();
         elements = imageDriver.initThresholds(screenShot, ELEMENTS_TO_SEARCH);
         System.out.println(elements);
@@ -64,7 +64,8 @@ public class MainSteps {
 
         System.out.println(spinElement);
         JSONObject coordinates = spinElement.getJSONObject("coordinates");
-
+        System.out.println(coordinates.getInt("x_center"));
+        System.out.println(coordinates.getInt("y_center"));
         Assert.assertNotNull(spinElement);
         TouchAction action = new TouchAction(driver);
         action.tap(coordinates.getInt("x_center"), coordinates.getInt("y_center")).release();
