@@ -63,7 +63,7 @@ public class ParserApi {
     }
 
     public HttpEntity findElementByTempalte(File originalImage, File templateImage) throws Exception {
-        HttpPost post = new HttpPost("http://172.19.2.136:8000/recognition/find_element/");
+        HttpPost post = new HttpPost("http://172.19.2.136:8000/recognition/find_template_image/");
         Cookie token = utils.HttpUtils.getToken("http://172.19.2.136:8000/recognition/find_template_image/");
 
         BasicCookieStore cookieStore = new BasicCookieStore();
@@ -73,6 +73,7 @@ public class ParserApi {
         FileBody originalImageData = new FileBody(originalImage);
         FileBody templateImageData = new FileBody(templateImage);
         MultipartEntityBuilder reqEntity = MultipartEntityBuilder.create().setLaxMode();
+        reqEntity.addPart("csrfmiddlewaretoken", new StringBody(token.getValue(), ContentType.TEXT_PLAIN));
         reqEntity.addPart("original_image", originalImageData);
         reqEntity.addPart("template_image", templateImageData);
 

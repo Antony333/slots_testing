@@ -1,5 +1,6 @@
 package steps;
 
+import cucumber.api.PendingException;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
@@ -29,6 +30,8 @@ public class MainSteps {
     public ImageDriver imageDriver;
     public JSONObject elements;
 
+    public String templatesDir = "src/test/resources/lobby_templates/";
+
 
     @Before
     public void setUp() throws Exception {
@@ -45,7 +48,7 @@ public class MainSteps {
         imageDriver = new ImageDriver();
     }
 
-    @Given("^I am in slot screen$")
+    @When("^I am in slot screen$")
     public void init_all_elements() throws Exception {
         //Waiting until we get slot screen
         Thread.sleep(100000);
@@ -138,5 +141,38 @@ public class MainSteps {
             // Copy paste file at destination folder location
         FileUtils.copyFile(scrFile, new File(destDir + "/" + destFile));
         return scrFile;
+    }
+
+    @Given("^I play as guest$")
+    public void selectPlayAsGuest() throws Throwable {
+        Thread.sleep(30000);
+        File screenShot = takeScreenShot();
+        JSONObject playAsGuestCoordinates = imageDriver.findElementByTempalte(screenShot, new File(templatesDir + "play_as_guest.png"));
+        System.out.println(playAsGuestCoordinates);
+        TouchAction action = new TouchAction(driver);
+        action.tap(playAsGuestCoordinates.getInt("x_center"), playAsGuestCoordinates.getInt("y_center")).release();
+        action.perform();
+    }
+
+    @When("^I choose slot$")
+    public void iChooseSlot() throws Throwable {
+        Thread.sleep(10000);
+        File screenShot = takeScreenShot();
+        JSONObject playAsGuestCoordinates = imageDriver.findElementByTempalte(screenShot, new File(templatesDir + "spin1.png"));
+        System.out.println(playAsGuestCoordinates);
+        TouchAction action = new TouchAction(driver);
+        action.tap(playAsGuestCoordinates.getInt("x_center"), playAsGuestCoordinates.getInt("y_center")).release();
+        action.perform();
+    }
+
+    @And("^I choose bet$")
+    public void iChooseBet() throws Throwable {
+        Thread.sleep(10000);
+        File screenShot = takeScreenShot();
+        JSONObject playAsGuestCoordinates = imageDriver.findElementByTempalte(screenShot, new File(templatesDir + "Bet_10000.png"));
+        System.out.println(playAsGuestCoordinates);
+        TouchAction action = new TouchAction(driver);
+        action.tap(playAsGuestCoordinates.getInt("x_center"), playAsGuestCoordinates.getInt("y_center")).release();
+        action.perform();
     }
 }
