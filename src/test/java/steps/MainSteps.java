@@ -51,7 +51,7 @@ public class MainSteps {
     @When("^I am in slot screen$")
     public void init_all_elements() throws Exception {
         //Waiting until we get slot screen
-        Thread.sleep(100000);
+        Thread.sleep(2000);
         File screenShot = takeScreenShot();
         elements = imageDriver.initThresholds(screenShot, ELEMENTS_TO_SEARCH);
         System.out.println(elements);
@@ -61,10 +61,11 @@ public class MainSteps {
 
     @When("^I spin slot$")
     public void find_element_and_click() throws Exception {
+        Thread.sleep(10000);
         File screenShot = takeScreenShot();
         String spinThreshold = String.valueOf(elements.getInt("SPIN"));
         JSONObject spinElement = imageDriver.findElement(screenShot, "SPIN", spinThreshold);
-
+        System.out.println("I spin element");
         System.out.println(spinElement);
         JSONObject coordinates = spinElement.getJSONObject("coordinates");
         System.out.println(coordinates.getInt("x_center"));
@@ -145,7 +146,7 @@ public class MainSteps {
 
     @Given("^I play as guest$")
     public void selectPlayAsGuest() throws Throwable {
-        Thread.sleep(30000);
+        Thread.sleep(100000);
         File screenShot = takeScreenShot();
         JSONObject playAsGuestCoordinates = imageDriver.findElementByTempalte(screenShot, new File(templatesDir + "play_as_guest.png"));
         System.out.println(playAsGuestCoordinates);
@@ -158,7 +159,7 @@ public class MainSteps {
     public void iChooseSlot() throws Throwable {
         Thread.sleep(10000);
         File screenShot = takeScreenShot();
-        JSONObject playAsGuestCoordinates = imageDriver.findElementByTempalte(screenShot, new File(templatesDir + "spin1.png"));
+        JSONObject playAsGuestCoordinates = imageDriver.findElementByTempalte(screenShot, new File(templatesDir + "Spin1_samsung.png"));
         System.out.println(playAsGuestCoordinates);
         TouchAction action = new TouchAction(driver);
         action.tap(playAsGuestCoordinates.getInt("x_center"), playAsGuestCoordinates.getInt("y_center")).release();
@@ -169,7 +170,7 @@ public class MainSteps {
     public void iChooseBet() throws Throwable {
         Thread.sleep(10000);
         File screenShot = takeScreenShot();
-        JSONObject playAsGuestCoordinates = imageDriver.findElementByTempalte(screenShot, new File(templatesDir + "Bet_10000.png"));
+        JSONObject playAsGuestCoordinates = imageDriver.findElementByTempalte(screenShot, new File(templatesDir + "Bet_samsung.png"));
         System.out.println(playAsGuestCoordinates);
         TouchAction action = new TouchAction(driver);
         action.tap(playAsGuestCoordinates.getInt("x_center"), playAsGuestCoordinates.getInt("y_center")).release();
