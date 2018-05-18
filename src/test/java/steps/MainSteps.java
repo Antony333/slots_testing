@@ -138,7 +138,7 @@ public class MainSteps {
         Thread.sleep(100000);
         System.out.println("Take screenshot main lobby");
         File screenShot = takeScreenShot();
-        JSONObject playAsGuestCoordinates = imageDriver.findElementByTempalte(screenShot, new File(templatesDir + "play_as_guset_samsung.png"));
+        JSONObject playAsGuestCoordinates = imageDriver.findElementByTempalte(screenShot, new File(templatesDir + "guest galaxy note 4.png"));
         System.out.println(playAsGuestCoordinates);
         TouchAction action = new TouchAction(driver);
         action.tap(playAsGuestCoordinates.getInt("x_center"), playAsGuestCoordinates.getInt("y_center")).release();
@@ -150,7 +150,7 @@ public class MainSteps {
         Thread.sleep(10000);
         System.out.println("\nTake screenshot slots lobby");
         File screenShot = takeScreenShot();
-        JSONObject allSpins = imageDriver.findElementByTempalte(screenShot, new File(templatesDir + "all_slots_samsung.png"));
+        JSONObject allSpins = imageDriver.findElementByTempalte(screenShot, new File(templatesDir + "All slots Note 4.png"));
         System.out.println(allSpins);
         System.out.printf("\nTry to click all spins\n");
         TouchAction action = new TouchAction(driver);
@@ -180,7 +180,7 @@ public class MainSteps {
         System.out.println("Choose bet\n");
         TouchAction action = new TouchAction(driver);
 //        action.tap(playAsGuestCoordinates.getInt("x_center"), playAsGuestCoordinates.getInt("y_center")).release();
-        action.tap(930, 615).release();
+        action.tap(1801, 1225).release();
         action.perform();
     }
 
@@ -219,7 +219,7 @@ public class MainSteps {
 
             int startx = (int) (width * (0.91));
             System.out.println(startx);
-            int endx = (int) (width * (0.28));
+            int endx = (int) (width * (0.10));
             System.out.println(endx);
             int starty =  height / 2 ;
             System.out.println(starty);

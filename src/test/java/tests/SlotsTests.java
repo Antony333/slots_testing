@@ -20,7 +20,7 @@ public class SlotsTests {
     @DataProvider(name="Slots")
     public static Object[][] slotsInfo() {
         return new Object[][] {
-                {"1.png", "Bet_10000.png", 0},
+//                {"1.png", "Bet_10000.png", 0},
 //                {"2.png", "Bet_10000.png", 0},
 //                {"3.png", "Bet_10800.png", 0},
 //                {"4.png", "Bet_24000.png", 0},
