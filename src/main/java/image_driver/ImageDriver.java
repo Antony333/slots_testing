@@ -33,7 +33,7 @@ public class ImageDriver {
         HttpEntity initThresholdsEntity = parserApi.initThresholds(file, elements);
 
         String json = EntityUtils.toString(initThresholdsEntity, StandardCharsets.UTF_8);
-
+        System.out.println(String.format("Elements: %s", json));
         return new JSONObject(json);
 
     }
